@@ -102,7 +102,7 @@ class GaussianDiffusion(nn.Module):
         if y is not None and batch_size != len(y):
             raise ValueError("sample batch size different from length of given y")
 
-        x = torch.randn(batch_size, self.img_channels, *self.img_size, device=device)
+        x = torch.randn(batch_size, self.img_channels, *self.img_size, device=device) # XT
         
         for t in range(self.num_timesteps - 1, -1, -1):
             t_batch = torch.tensor([t], device=device).repeat(batch_size)
@@ -139,10 +139,10 @@ class GaussianDiffusion(nn.Module):
         )   
 
     def get_losses(self, x, t, y):
-        noise = torch.randn_like(x)
+        noise = torch.randn_like(x)  # noise = z
 
-        perturbed_x = self.perturb_x(x, t, noise)
-        estimated_noise = self.model(perturbed_x, t, y)
+        perturbed_x = self.perturb_x(x, t, noise)  # Xt
+        estimated_noise = self.model(perturbed_x, t, y) 
 
         if self.loss_type == "l1":
             loss = F.l1_loss(estimated_noise, noise)
